@@ -1,6 +1,6 @@
 {
   "name": "@ginden/ha-mqtt-discoverable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Rewrite of classic Python library, but in Node",
   "license": "Apache-2.0",
   "author": "Michał Wadas",
@@ -25,7 +25,9 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier --write src examples *.md .github/workflows"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@types/lodash": "^4.17.16",
