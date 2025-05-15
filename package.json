@@ -1,0 +1,32 @@
+{
+  "name": "@ginden/ha-mqtt-discoverable",
+  "version": "1.0.0",
+  "description": "Rewrite of classic Python library, but in Node",
+  "license": "Apache-2.0",
+  "author": "Michał Wadas",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepare": "tsc",
+    "lint": "eslint src",
+    "lint:fix": "npm run lint -- --fix",
+    "prettier": "prettier --write src examples README.md"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.1",
+    "@types/lodash": "^4.17.16",
+    "eslint": "^9.25.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "type-fest": "^4.40.0",
+    "typedoc": "^0.28.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "mqtt": "^5.11.1",
+    "tsafe": "^1.8.5",
+    "zod": "^3.24.3"
+  }
+}
