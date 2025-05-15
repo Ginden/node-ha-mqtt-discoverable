@@ -16,9 +16,7 @@ npm install @ginden/ha-mqtt-discoverable
 
 ### API docs
 
-Automatically generated using [typedoc](https://typedoc.org/) are available on Github Pages.
-
-TODO: add link here
+Automatically generated using [typedoc](https://typedoc.org/) are available through [GitHub Pages](https://ginden.github.io/node-ha-mqtt-discoverable/).
 
 ### TODO
 
