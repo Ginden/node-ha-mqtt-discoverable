@@ -5,7 +5,7 @@ on:
     inputs:
       bump:
         type: choice
-        description: "Bump version"
+        description: 'Bump version'
         options:
           - patch
           - minor
@@ -37,19 +37,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-# TODO: add this later
-#      - name: Create Release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#            tag_name: ${{ github.ref }}
-#            release_name: Release ${{ github.ref }}
-#            body: |
-#              ## Changelog
-#              - Bumped version to ${{ github.event.inputs.bump }}
-#            files: |
-#              dist/*
-
-
       - name: Generate TypeDoc
         run: npx typedoc
 
@@ -57,5 +44,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs  # assuming TypeDoc outputs here
+          publish_dir: ./docs # assuming TypeDoc outputs here
           publish_branch: gh-pages

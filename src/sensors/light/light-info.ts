@@ -30,7 +30,7 @@ export class LightInfo extends EntityInfo {
    * state_off for details) and sending as off command to the command_topic
    */
   @Validate(z.string())
-  payloadOff: string = 'OFF';
+  payloadOff = 'OFF';
 
   /**
    * The payload that represents on state. If specified, will be used for both
@@ -38,7 +38,7 @@ export class LightInfo extends EntityInfo {
    * for details) and sending as on command to the command_topic.
    */
   @Validate(z.string())
-  payloadOn: string = 'ON';
+  payloadOn = 'ON';
 
   /**
    * Flag that defines if the light supports setting the brightness

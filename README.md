@@ -32,7 +32,12 @@ Simple example:
 
 ```typescript
 import { connect } from 'mqtt';
-import { DeviceInfo, HaDiscoverableGlobalSettings, NumberInfo, Number } from '@ginden/ha-mqtt-discoverable';
+import {
+  DeviceInfo,
+  HaDiscoverableGlobalSettings,
+  NumberInfo,
+  Number,
+} from '@ginden/ha-mqtt-discoverable';
 
 // Connect to the MQTT broker
 const client = await connect(`mqtt://localhost:1883`);
