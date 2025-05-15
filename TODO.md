@@ -9,7 +9,7 @@ The following entity types are currently missing. As Home Assistant continues to
 - [ ] [Device tracker](https://www.home-assistant.io/integrations/device_tracker.mqtt/)
 - [ ] [Fan](https://www.home-assistant.io/integrations/fan.mqtt/)
 - [ ] [HVAC](https://www.home-assistant.io/integrations/climate.mqtt/)
-- [ ] [Lawn mower](https://www.home-assistant.io/integrations/lawn_mower.mqtt/) 
+- [ ] [Lawn mower](https://www.home-assistant.io/integrations/lawn_mower.mqtt/)
 - [ ] [Lock](https://www.home-assistant.io/integrations/lock.mqtt/)
 - [ ] [Alarm control panel](https://www.home-assistant.io/integrations/alarm_control_panel.mqtt/)
 - [ ] [Scene](https://www.home-assistant.io/integrations/scene.mqtt/)
