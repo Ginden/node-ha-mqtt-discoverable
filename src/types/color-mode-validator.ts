@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { ColorMode } from '../types/color-mode';
+import { ColorMode } from './color-mode';
 
 export interface ColorModeSelector {
   [ColorMode.rgb]: RgbColor;
@@ -14,7 +14,7 @@ const xyColor = z.object({
   y: z.number(),
 });
 
-interface XyColor {
+export interface XyColor {
   // X coordinate
   x: number;
   // Y coordinate
@@ -26,7 +26,7 @@ const hsColor = z.object({
   s: z.number(),
 });
 
-interface HsColor {
+export interface HsColor {
   // Hue
   h: number;
   // Saturation
@@ -39,7 +39,7 @@ const rgbColor = z.object({
   b: z.number(),
 });
 
-interface RgbColor extends z.infer<typeof rgbColor> {
+export interface RgbColor extends z.infer<typeof rgbColor> {
   // Red
   r: number;
   // Green
@@ -55,7 +55,7 @@ const rgbwColor = z.object({
   w: z.number(),
 });
 
-interface RgbwColor extends RgbColor, z.infer<typeof rgbwColor> {
+export interface RgbwColor extends RgbColor, z.infer<typeof rgbwColor> {
   // White
   w: number;
 }
@@ -68,7 +68,7 @@ const rgbwwColor = z.object({
   w: z.number(),
 });
 
-interface RgbwwColor extends RgbColor, z.infer<typeof rgbwwColor> {
+export interface RgbwwColor extends RgbColor, z.infer<typeof rgbwwColor> {
   // Cool white
   c: number;
   // Warm white

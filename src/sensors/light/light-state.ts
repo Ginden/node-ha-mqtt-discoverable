@@ -1,4 +1,4 @@
-import { ColorObject } from '../../utils/color-mode-validator';
+import { ColorObject } from '../../types/color-mode-validator';
 import { ColorMode } from '../../types';
 
 export type LightState = {

@@ -1,6 +1,6 @@
 import { Subscriber } from '../../subscriber';
 import type { ColorMode } from '../../types';
-import { ColorModeSelector, colorModeValidator } from '../../utils/color-mode-validator';
+import { ColorModeSelector, colorModeValidator } from '../../types/color-mode-validator';
 import { LightState } from './light-state';
 import { LightInfo } from './light-info';
 
