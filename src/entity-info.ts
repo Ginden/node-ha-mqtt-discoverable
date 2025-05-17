@@ -101,7 +101,14 @@ export abstract class EntityInfo {
   @Validate(z.string().optional())
   uniqueId?: string;
 
-  protected constructor(key: unknown) {
+  /**
+   *
+   * @param key This is a unique symbol to prevent direct instantiation of this class.
+   * @throws Error if the class is instantiated directly.
+   * @internal
+   * @private
+   */
+  constructor(key: unknown) {
     if (key !== uniqueSymbol) {
       throw new Error(
         `${this.constructor.name} cannot be instantiated directly. Use the static create() method instead.`,
