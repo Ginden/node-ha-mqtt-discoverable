@@ -1,4 +1,6 @@
-import { noop } from 'lodash';
+import _ from 'lodash';
+
+const noop = _.noop;
 
 export interface DiscoverableLogger {
   debug: (msg: string, data?: Record<string, unknown>) => void;

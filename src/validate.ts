@@ -1,6 +1,8 @@
 import { ZodSchema } from 'zod';
-import { once } from 'lodash';
+import _ from 'lodash';
 import { Class } from 'type-fest';
+
+const once = _.once;
 
 const weakMap = new WeakMap<WeakKey, [PropertyKey, Factory][]>();
 
