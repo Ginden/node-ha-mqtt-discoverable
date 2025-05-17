@@ -53,8 +53,8 @@ export class DeviceInfo {
   identifiers?: string[] | string;
 
   /** A list of connections of the device to the outside world as a list of tuples [connection_type, connection_identifier] */
-  @Validate(z.array(z.unknown()).optional())
-  connections?: Array<unknown>[];
+  @Validate(z.array(z.tuple([z.unknown(), z.unknown()])).optional())
+  connections?: [unknown, unknown][];
 
   /** A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link. */
   @Validate(z.string().optional())

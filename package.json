@@ -24,7 +24,7 @@
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier --write src examples *.md .github/workflows",
-    "test": "vitest"
+    "test": "vitest run"
   },
   "files": [
     "dist"

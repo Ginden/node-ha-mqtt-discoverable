@@ -1,4 +1,4 @@
-import { ZodSchema } from 'zod';
+import { z, ZodSchema } from 'zod';
 import _ from 'lodash';
 import { Class } from 'type-fest';
 
@@ -17,14 +17,13 @@ export function Validate(schema: ZodSchema | (() => ZodSchema)) {
     addInitializer(function init(this: any) {
       const ctor = this.constructor;
       const list = weakMap.get(ctor) ?? [];
-      if (!list) weakMap.set(ctor, list);
+      weakMap.set(ctor, list);
       list.push([name, factory]);
     });
   };
 }
 
 export function runValidation(obj: unknown): void {
-  // FIXME: we should define behavior when subclass overwrite validation
   for (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let ctor: Class<unknown> = (obj as any).constructor;
@@ -33,9 +32,8 @@ export function runValidation(obj: unknown): void {
   ) {
     const list = weakMap.get(ctor) ?? [];
 
-    for (const [key, f] of list) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      f().parse((obj as any)[key]);
-    }
+    const objectValidator = z.object(Object.fromEntries(list.map(([key, f]) => [key, f()])));
+
+    objectValidator.parse(obj);
   }
 }

@@ -1,4 +1,4 @@
-import {runValidation, Validate} from './validate';
+import { runValidation, Validate } from './validate';
 import { z } from 'zod';
 import { DeviceInfo } from './device-info';
 import { ConditionalPick, JsonValue, WritableKeysOf } from 'type-fest';

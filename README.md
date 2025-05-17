@@ -26,7 +26,7 @@ See [TODO.md](./TODO.md) for a more detailed list.
 
 ## Known issues
 
-* Validation is not working properly. This needs unit tests.
+- Validation is not working properly. This needs unit tests.
 
 ### Examples
 
@@ -76,7 +76,7 @@ await setInterval(() => {
 
 ### Good practices
 
-* Create a bridge class between your device and HA representation. This will get ugly really fast if you try to do everything in the callback. This is especially important for devices with multiple entities (e.g. a light with a color temperature and brightness).
+- Create a bridge class between your device and HA representation. This will get ugly really fast if you try to do everything in the callback. This is especially important for devices with multiple entities (e.g. a light with a color temperature and brightness).
 
 ## Contributing
 
