@@ -46,6 +46,9 @@ export class HaDiscoverableManager {
     this.manualAvailability = manualAvailability;
     this.logger = logger;
     this.client.on('message', this.messageCallback);
+    this.addConnectCallback(() => {
+      this.logger.debug(`Connected to MQTT broker`);
+    });
   }
 
   /**
@@ -65,7 +68,7 @@ export class HaDiscoverableManager {
   /**
    * This method adds a connect callback to the manager
    * It will be called when the client connects to the broker.
-   * If the client is already connected, it will be called immediately, and potential error will be emitted as `error` event on the client.
+   * If the client is already connected, it will be called immediately, and a potential error will be emitted as `error` event on the client.
    * This is not an elegant solution, but async constructors don't exist in JS.
    */
   addConnectCallback(callback: (client: MqttClient) => unknown) {
@@ -102,6 +105,7 @@ export class HaDiscoverableManager {
    * `AggregateError` will be thrown if any of the unregistering fails.
    */
   async unregisterAll() {
+    this.logger.debug(`Unregistering all discoverables...`);
     const aggregateErrors: Error[] = [];
     for (const discoverable of this.discoverables) {
       try {
@@ -118,6 +122,7 @@ export class HaDiscoverableManager {
   protected readonly messageCallback: OnMessageCallback = (topic, payload, packet) => {
     const data = this.messageCallbacks.get(topic);
     if (!data) {
+      this.logger.debug(`Received message on topic ${topic}, but no callback registered`);
       return;
     }
     const { cb, sensor } = data;

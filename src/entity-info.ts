@@ -1,4 +1,4 @@
-import { Validate } from './validate';
+import {runValidation, Validate} from './validate';
 import { z } from 'zod';
 import { DeviceInfo } from './device-info';
 import { ConditionalPick, JsonValue, WritableKeysOf } from 'type-fest';
@@ -29,6 +29,8 @@ export abstract class EntityInfo {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this as any).wholeValidation(ret);
+
+    runValidation(ret);
 
     return ret;
   }

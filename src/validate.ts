@@ -24,6 +24,7 @@ export function Validate(schema: ZodSchema | (() => ZodSchema)) {
 }
 
 export function runValidation(obj: unknown): void {
+  // FIXME: we should define behavior when subclass overwrite validation
   for (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let ctor: Class<unknown> = (obj as any).constructor;

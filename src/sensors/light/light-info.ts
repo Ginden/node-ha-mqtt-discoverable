@@ -42,6 +42,7 @@ export class LightInfo extends EntityInfo {
 
   /**
    * Flag that defines if the light supports setting the brightness
+   * BUG: This seems to be ignored by Home Assistant
    */
   @Validate(z.boolean().optional())
   brightness?: boolean;
