@@ -15,7 +15,7 @@ export abstract class EntityInfo {
     properties: Partial<
       ConditionalPick<
         Pick<DerivedEntityInfo, WritableKeysOf<DerivedEntityInfo>>,
-        JsonValue | undefined
+        JsonValue | undefined | DeviceInfo
       >
     >,
   ): DerivedEntityInfo {
@@ -30,8 +30,6 @@ export abstract class EntityInfo {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this as any).wholeValidation(ret);
 
-    runValidation(ret);
-
     return ret;
   }
 
@@ -44,6 +42,8 @@ export abstract class EntityInfo {
     if (device !== undefined && uniqueId === undefined) {
       throw new Error('A unique_id is required if a device is defined');
     }
+
+    runValidation(obj);
   }
 
   /** One of the supported MQTT components, for instance `binary_sensor` */

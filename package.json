@@ -23,7 +23,8 @@
     "build": "tsup",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
-    "prettier": "prettier --write src examples *.md .github/workflows"
+    "prettier": "prettier --write src examples *.md .github/workflows",
+    "test": "vitest"
   },
   "files": [
     "dist"
@@ -38,7 +39,8 @@
     "type-fest": "^4.40.0",
     "typedoc": "^0.28.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.1"
+    "typescript-eslint": "^8.31.1",
+    "vitest": "^3.1.3"
   },
   "dependencies": {
     "lodash": "^4.17.21",
