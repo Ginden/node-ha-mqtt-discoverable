@@ -3,11 +3,21 @@ import { HaDiscoverableManager } from './settings/ha-discoverables-manager';
 import { MqttClient } from 'mqtt';
 import { assert } from 'tsafe';
 import { cleanString } from './utils/clean-string';
+import { CustomEventEmitter } from './custom-event-emitter';
+
+export type DiscoverableEvents = {
+  connected: [Discoverable<EntityInfo>];
+  'write-config': [Discoverable<EntityInfo>, config: Record<string, unknown>];
+  error: [Error];
+};
 
 /**
  * Base class for making MQTT discoverable objects
  */
-export abstract class Discoverable<E extends EntityInfo> {
+export abstract class Discoverable<
+  E extends EntityInfo,
+  Events extends DiscoverableEvents = DiscoverableEvents,
+> extends CustomEventEmitter<Events> {
   public readonly entity: E;
   protected readonly settings: HaDiscoverableManager;
   protected entityTopic: string;
@@ -24,9 +34,15 @@ export abstract class Discoverable<E extends EntityInfo> {
     entityInfo: E,
     onConnect?: (client: MqttClient) => void,
   ) {
+    super({
+      captureRejections: true,
+    });
     this.entity = entityInfo;
     this.settings = settings;
-    this.settings.addConnectCallback(() => this.writeConfig());
+    this.settings.addConnectCallback(async () => {
+      await this.writeConfig();
+      this.emitVoid('connected', this);
+    });
     if (onConnect) {
       this.settings.addConnectCallback(onConnect);
     }
@@ -79,7 +95,9 @@ export abstract class Discoverable<E extends EntityInfo> {
       });
 
       assert(configTopic, 'Config topic not set');
-      return await this.mqtt.publishAsync(configTopic, JSON.stringify(configMessage));
+      const ret = await this.mqtt.publishAsync(configTopic, JSON.stringify(configMessage));
+      this.emitVoid('write-config', this, configMessage);
+      return ret;
     } catch (e) {
       this.wroteConfiguration = false;
       this.logger.warn(`Failed to write configuration: ${e}`, this.debugInfo());

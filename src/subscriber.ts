@@ -1,7 +1,19 @@
-import { Discoverable } from './discoverable';
+import { Discoverable, DiscoverableEvents } from './discoverable';
 import { EntityInfo } from './entity-info';
-import { MessageCallback } from './settings/message-callback';
+import { MessageDetails } from './settings/message-callback';
 import { HaDiscoverableManager } from './settings';
+
+export interface SubscriberEvents<CommandOptions, Sensor, EI extends EntityInfo>
+  extends DiscoverableEvents {
+  'command.json': [
+    json: CommandOptions,
+    sensor: Sensor,
+    topic: string,
+    details: MessageDetails<EI>,
+  ];
+  'command.string': [str: string, sensor: Sensor, topic: string, details: MessageDetails<EI>];
+  'command.unparsable': [raw: Buffer, sensor: Sensor, topic: string, details: MessageDetails<EI>];
+}
 
 /**
  * Specialized subclass that listens to commands coming from an MQTT topic
@@ -10,33 +22,35 @@ export abstract class Subscriber<
   E extends EntityInfo,
   CommandOptions = unknown,
   Sensor extends Discoverable<E> = Discoverable<E>,
-> extends Discoverable<E> {
-  constructor(
-    entityInfo: E,
-    settings: HaDiscoverableManager,
-    private readonly commandCallback: MessageCallback<CommandOptions, Sensor, E>,
-  ) {
+  Events extends SubscriberEvents<CommandOptions, Sensor, E> = SubscriberEvents<
+    CommandOptions,
+    Sensor,
+    E
+  >,
+> extends Discoverable<E, Events> {
+  constructor(entityInfo: E, settings: HaDiscoverableManager) {
     super(settings, entityInfo, () => this.subscribe());
   }
 
-  protected get _commandTopic(): string {
-    return `${this.settings.mqttSettings.statePrefix}/${this.stateTopic}/command`;
+  public get commandTopic(): string {
+    return `${this.stateTopic}/command`;
   }
 
   public async subscribe() {
-    this.settings.addMessageCallback(
-      this._commandTopic,
-      this.commandCallback as MessageCallback,
-      this,
-    );
-    await this.mqtt.subscribeAsync(this._commandTopic, { qos: 1 });
+    this.settings.addCommandCallback(this.commandTopic, this);
+    await this.mqtt.subscribeAsync(this.commandTopic, { qos: 1 });
+  }
+
+  public withCommand(cb: (...args: Events['command.json']) => unknown) {
+    this.on('command.json', cb);
+    return this;
   }
 
   /** Override base config to add the command topic of this switch */
   generateConfig() {
     return {
       ...super.generateConfig(),
-      command_topic: this._commandTopic,
+      command_topic: this.commandTopic,
     };
   }
 

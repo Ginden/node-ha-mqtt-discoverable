@@ -37,8 +37,9 @@ This is a relatively new feature in Home Assistant, and I'm not sure if it's sup
 ## Other missing features
 
 - General:
-  - Dynamic re-discovery: republishing discovery/config messages when entity properties change at runtime
-  - Removal of entities: currently, entities are removed only when you manually call `.unregister()`. This is not a problem for most use cases, but it would be nice to have this feature.
+  - [ ] Dynamic re-discovery: republishing discovery/config messages when entity properties change at runtime
+  - [ ] Removal of entities: currently, entities are removed only when you manually call `.unregister()`. This is not a problem for most use cases, but it would be nice to have this feature.
+  - [ ] Support for birth/will messages
 
 ### Incomplete support
 

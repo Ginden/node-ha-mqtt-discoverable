@@ -1,11 +1,11 @@
 import { MqttClient, OnMessageCallback } from 'mqtt';
 import { setImmediate } from 'timers/promises';
 import { DiscoverableLogger, noopLogger } from './discoverable-logger';
-import { MessageCallback, MessageWrapper } from './message-callback';
 import { HaDiscoverableMqttSettings } from './ha-discoverable-mqtt-settings';
 import { HaDiscoverableGlobalSettingsProperties } from './ha-discoverable-global-settings-properties';
 import type { Discoverable } from '../discoverable';
 import type { EntityInfo } from '../entity-info';
+import { Subscriber } from '../subscriber';
 
 /**
  * This class manages everything related to the discoverable entities.
@@ -29,11 +29,7 @@ export class HaDiscoverableManager {
   readonly manualAvailability: boolean;
   readonly logger: DiscoverableLogger;
 
-  private messageCallbacks: Map<
-    string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    { cb: MessageCallback<any>; sensor: Discoverable<EntityInfo> }
-  > = new Map();
+  private commandCallbacks: Map<string, { subscriber: Subscriber<EntityInfo> }> = new Map();
 
   constructor(
     client: MqttClient,
@@ -56,13 +52,8 @@ export class HaDiscoverableManager {
    * Internally, our message callback listens to all messages, and ignores the ones that are not registered.
    * @internal
    */
-  addMessageCallback<T extends Discoverable<EntityInfo>>(
-    topic: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    cb: MessageCallback<any, any>,
-    sensor: T,
-  ): void {
-    this.messageCallbacks.set(topic, { cb, sensor });
+  addCommandCallback<T extends Subscriber<EntityInfo>>(topic: string, subscriber: T) {
+    this.commandCallbacks.set(topic, { subscriber });
   }
 
   /**
@@ -88,7 +79,8 @@ export class HaDiscoverableManager {
    * It's called in `Discoverable` constructor, and not intended to be called by the user.
    * @internal
    */
-  register(discoverable: Discoverable<EntityInfo>) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  register(discoverable: Discoverable<EntityInfo, any>) {
     this.discoverables.add(discoverable);
   }
 
@@ -120,34 +112,25 @@ export class HaDiscoverableManager {
   }
 
   protected readonly messageCallback: OnMessageCallback = (topic, payload, packet) => {
-    const data = this.messageCallbacks.get(topic);
+    const data = this.commandCallbacks.get(topic);
     if (!data) {
       this.logger.debug(`Received message on topic ${topic}, but no callback registered`);
       return;
     }
-    const { cb, sensor } = data;
+    const { subscriber } = data;
     const str = payload.toString('utf8');
-    let wrapper: MessageWrapper<unknown> = {
-      isJson: false,
-      str: str,
-      json: null,
-    };
-    const parseAsJson = data.cb.parse ?? true;
-    if (parseAsJson) {
-      try {
-        wrapper = {
-          isJson: true,
-          str: str,
-          json: JSON.parse(str),
-        };
-      } catch {}
-    }
-
-    return cb(wrapper, sensor, topic, {
+    const details = {
       raw: payload,
       client: this.client,
-      entity: sensor.entity,
+      entity: subscriber.entity,
       packet: packet,
-    });
+    };
+    subscriber.emitVoid('command.string', str, subscriber, topic, details);
+    try {
+      const parsed = JSON.parse(str);
+      subscriber.emitVoid('command.json', parsed, subscriber, topic, details);
+    } catch {
+      subscriber.emitVoid('command.unparsable', payload, subscriber, topic, details);
+    }
   };
 }

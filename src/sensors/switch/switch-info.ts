@@ -23,7 +23,7 @@ export class SwitchInfo extends EntityInfo {
    * state_off for details) and sending as off command to the command_topic
    */
   @Validate(z.string().optional())
-  payloadOff: string = 'OFF';
+  payloadOff: string = JSON.stringify('OFF');
 
   /**
    * The payload that represents on state. If specified, will be used for both
@@ -31,7 +31,7 @@ export class SwitchInfo extends EntityInfo {
    * for details) and sending as on command to the command_topic.
    */
   @Validate(z.string().optional())
-  payloadOn: string = 'ON';
+  payloadOn: string = JSON.stringify('ON');
 
   /** If the published message should have the retain flag on or not */
   @Validate(z.boolean().optional())

@@ -18,15 +18,27 @@ npm install @ginden/ha-mqtt-discoverable
 
 Automatically generated using [typedoc](https://typedoc.org/) are available through [GitHub Pages](https://ginden.github.io/node-ha-mqtt-discoverable/).
 
+### Usage
+
+`Discoverable` _de facto_ extends built-in `EventEmitter` class (using some indirection).
+
+All subclasses of `Subscriber` (entities that can be updated from Home Assistant) emit the following events:
+
+- `command.json` - emitted when a command is received from Home Assistant. The payload is the parsed JSON object.
+- `command.string` - emitted when a command is received from Home Assistant. The payload is the raw string.
+- `command.unparsable` - emitted when a command is received from Home Assistant, but the payload cannot be parsed. The payload is raw Buffer.
+
+All subclasses of `Discoverable` emit the following events:
+
+- `error` - emitted when an error occurs. The payload is the error object.
+- `connected` - emitted when the entity is connected to the MQTT broker. The payload is the discoverable itself.
+- `write-config` - emitted when the entity is written to the MQTT broker. The payload is `[Discoverable, config: Record<string, any>]`.
+
 ### TODO
 
 Quite a lot! While I implemented all features from the original library, there is still a lot to do here.
 
 See [TODO.md](./TODO.md) for a more detailed list.
-
-## Known issues
-
-- Validation is not working properly. This needs unit tests.
 
 ### Examples
 
@@ -60,9 +72,9 @@ const numberInfo = NumberInfo.create({
 
 let i = 0;
 
-const numberSensor = new Number(numberInfo, settings, (haSetValue) => {
-  i = haSetValue;
-  console.log(`User in HA set value to ${haSetValue}`);
+const numberSensor = new Number(numberInfo, settings).on('command.json', (payload: number) => {
+  i = payload;
+  console.log('Command received:', payload);
 });
 
 await numberSensor.setValue(i);

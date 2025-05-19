@@ -9,12 +9,12 @@ import { LightInfo } from './light-info';
  */
 export class Light extends Subscriber<LightInfo, LightState, Light> {
   /** Set light to on */
-  async on() {
+  async switchOn() {
     return await this.updateState({ state: this.entity.payloadOn });
   }
 
   /** Set light to off */
-  async off() {
+  async switchOff() {
     return await this.updateState({ state: this.entity.payloadOff });
   }
 

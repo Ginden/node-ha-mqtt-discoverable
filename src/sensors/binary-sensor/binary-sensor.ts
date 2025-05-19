@@ -16,11 +16,11 @@ export class BinarySensor extends Discoverable<BinarySensorInfo | SwitchInfo> {
     }
     return (
       val instanceof Discoverable &&
-      'off' in val &&
-      'on' in val &&
+      'switchOff' in val &&
+      'switchOff' in val &&
       'updateState' in val &&
-      typeof val['off'] === 'function' &&
-      typeof val['on'] === 'function' &&
+      typeof val['switchOff'] === 'function' &&
+      typeof val['switchOff'] === 'function' &&
       typeof val['updateState'] === 'function'
     );
   }
@@ -35,19 +35,19 @@ export class BinarySensor extends Discoverable<BinarySensorInfo | SwitchInfo> {
   /**
    * Set binary sensor to off
    * **/
-  off(this: Pick<BinarySensor, 'updateState'>) {
+  switchOff(this: Pick<BinarySensor, 'updateState'>) {
     return this.updateState(false);
   }
 
   /**
    * Set binary sensor to on
    * **/
-  on(this: Pick<BinarySensor, 'updateState'>) {
+  switchOn(this: Pick<BinarySensor, 'updateState'>) {
     return this.updateState(true);
   }
 
   /** Update MQTT sensor state */
-  updateState(state = false) {
+  updateState(state: boolean) {
     return this._state_helper(state ? this.entity.payloadOn : this.entity.payloadOff);
   }
 }

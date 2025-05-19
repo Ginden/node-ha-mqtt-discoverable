@@ -1,29 +1,25 @@
 import { Subscriber } from '../../subscriber';
 import { BinarySensor } from '../binary-sensor/binary-sensor';
-import { HaDiscoverableManager, MessageCallback } from '../../settings';
+import { HaDiscoverableManager } from '../../settings';
 import { SwitchInfo } from './switch-info';
 
 /**
  * Implements an MQTT switch for Home Assistant discovery
  */
 export class Switch
-  extends Subscriber<SwitchInfo>
-  implements Pick<BinarySensor, Exclude<keyof BinarySensor, 'entity'>>
+  extends Subscriber<SwitchInfo, 'ON' | 'OFF'>
+  implements Pick<BinarySensor, Exclude<keyof BinarySensor, 'entity' | keyof Subscriber<never>>>
 {
-  constructor(
-    entity: SwitchInfo,
-    settings: HaDiscoverableManager,
-    command: MessageCallback<'on' | 'off'>,
-  ) {
-    super(entity, settings, command as MessageCallback);
+  constructor(entity: SwitchInfo, settings: HaDiscoverableManager) {
+    super(entity, settings);
   }
 
-  off() {
-    return BinarySensor.prototype.off.call(this);
+  switchOff() {
+    return BinarySensor.prototype.switchOff.call(this);
   }
 
-  on() {
-    return BinarySensor.prototype.on.call(this);
+  switchOn() {
+    return BinarySensor.prototype.switchOn.call(this);
   }
 
   updateState(state: boolean) {

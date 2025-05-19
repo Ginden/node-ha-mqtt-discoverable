@@ -12,8 +12,8 @@ export class ButtonInfo extends EntityInfo {
   readonly component = 'button';
 
   /** The payload to send to trigger the button. */
-  @Validate(z.string().optional())
-  readonly payloadPress = 'PRESS';
+  @Validate(z.string())
+  payloadPress = JSON.stringify('PRESS');
 
   /** If the published message should have the retain flag on or not */
   @Validate(z.boolean().optional())
