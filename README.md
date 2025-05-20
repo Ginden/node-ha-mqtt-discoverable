@@ -26,7 +26,7 @@ All subclasses of `Subscriber` (entities that can be updated from Home Assistant
 
 - `command.json` - emitted when a command is received from Home Assistant. The payload is the parsed JSON object.
 - `command.string` - emitted when a command is received from Home Assistant. The payload is the raw string.
-- `command.unparsable` - emitted when a command is received from Home Assistant, but the payload cannot be parsed. The payload is raw Buffer.
+- `command.raw` - emitted when a command is received from Home Assistant, but the payload cannot be parsed. The payload is raw Buffer.
 
 All subclasses of `Discoverable` emit the following events:
 

@@ -22,8 +22,8 @@ export class NumberInfo extends EntityInfo {
    * Control how the number should be displayed in the UI. Can be set to box
    * or slider to force a display mode.
    */
-  @Validate(z.string().optional())
-  mode?: string;
+  @Validate(z.enum(['box', 'slider', 'auto']).optional())
+  mode?: 'box' | 'slider' | 'auto';
 
   /**
    * Flag that defines if switch works in optimistic mode.

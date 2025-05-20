@@ -6,6 +6,8 @@ import { CameraInfo } from './camera-info';
  * Implements an MQTT camera for Home Assistant discovery
  */
 export class Camera extends Subscriber<CameraInfo> {
+  parseJson = false;
+  isBuffer = true;
   /**
    * Update the camera state (image URL).
    */

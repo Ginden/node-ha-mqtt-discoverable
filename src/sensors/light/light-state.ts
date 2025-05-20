@@ -1,8 +1,9 @@
 import { ColorObject } from '../../types/color-mode-validator';
 import { ColorMode } from '../../types';
+import {AutocompleteString} from "../../types/autocomplete-string";
 
 export type LightState = {
-  state: (('ON' | 'OFF') & {}) | string;
+  state: AutocompleteString<'ON' | 'OFF'>;
   color?: ColorObject;
   color_mode?: ColorMode;
   brightness?: number;
