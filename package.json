@@ -1,6 +1,6 @@
 {
   "name": "@ginden/ha-mqtt-discoverable",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Rewrite of classic Python library, but in Node",
   "license": "Apache-2.0",
   "author": "Michał Wadas",
