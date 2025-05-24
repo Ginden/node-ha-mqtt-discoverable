@@ -25,13 +25,6 @@ const client = await connect({
   protocolVersion: 5,
 });
 
-client.on('connect', () => {
-  console.log('MQTT connected');
-});
-client.on('error', (err) => {
-  console.error('MQTT error', err);
-});
-
 const deviceInfo = DeviceInfo.create({
   name: 'TEST-Blinkstick',
   identifiers: [`TEST-${blinkstick.serial}`],
@@ -54,7 +47,7 @@ for (let i = 0; i < lightCount; i++) {
     supportedColorModes: ['rgb'],
   });
 
-  const light = new Light(lightInfo, settings, async ({ json: { state, color } }) => {
+  const light = new Light(lightInfo, settings).withCommand(async ({ state, color }) => {
     if (state === 'OFF') {
       await blinkstick.setColor('black', { index: i });
     } else if (state === 'ON') {
@@ -75,6 +68,4 @@ for (let i = 0; i < lightCount; i++) {
       brightness: Math.max(r, g, b),
     });
   });
-  await light.subscribe();
-  await light.writeConfig();
 }
