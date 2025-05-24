@@ -20,6 +20,7 @@
   },
   "scripts": {
     "prepare": "husky",
+    "prepack": "npm run build",
     "build": "tsup",
     "check:ts": "tsc --noEmit",
     "lint": "eslint src",
