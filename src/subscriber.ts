@@ -2,7 +2,7 @@ import { Discoverable, DiscoverableEvents } from './discoverable';
 import { EntityInfo } from './entity-info';
 import { MessageDetails } from './settings/message-callback';
 import { HaDiscoverableManager } from './settings';
-import {JsonValue} from "type-fest";
+import { JsonValue } from 'type-fest';
 
 export interface SubscriberEvents<CommandOptions, Sensor, EI extends EntityInfo>
   extends DiscoverableEvents {

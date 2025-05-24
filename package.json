@@ -19,12 +19,15 @@
     }
   },
   "scripts": {
-    "prepare": "npm run build",
+    "prepare": "husky",
     "build": "tsup",
+    "check:ts": "tsc --noEmit",
     "lint": "eslint src",
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier --write src examples *.md .github/workflows",
-    "test": "vitest run"
+    "prettier:check": "prettier --check src examples *.md .github/workflows",
+    "test": "vitest run",
+    "verify": "concurrently \"npm:lint\" \"npm:test\" \"npm:prettier:check\" \"npm:check:ts\""
   },
   "files": [
     "dist"
@@ -32,8 +35,10 @@
   "devDependencies": {
     "@eslint/js": "^9.25.1",
     "@types/lodash": "^4.17.16",
+    "concurrently": "^9.1.2",
     "eslint": "^9.25.1",
     "globals": "^16.0.0",
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "tsup": "^8.4.0",
     "type-fest": "^4.40.0",
