@@ -162,12 +162,13 @@ export abstract class Discoverable<
     if (last_reset) {
       state = JSON.stringify({ state, last_reset });
     }
-    this.logger.debug('Writing state', {
-      ...this.debugInfo(),
-      topic,
-      state,
-    });
     assert(topic, 'Topic is required');
+    this.logger.debug(`Publishing message to topic ${topic}`, {
+      state: state instanceof Uint8Array ? state.toString('hex') : String(state),
+      retain,
+      ...this.debugInfo(),
+    });
+
     if (state instanceof Uint8Array) {
       return await this.mqtt.publishAsync(topic, state, { retain });
     }

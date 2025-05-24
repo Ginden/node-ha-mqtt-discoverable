@@ -129,16 +129,27 @@ export class HaDiscoverableManager {
       const str = payload.toString('utf8');
 
       subscriber.emitVoid('command.string', str, subscriber, topic, details);
+      this.logger.debug(`Emitting command.string from ${topic} for ${subscriber.constructor.name}`);
       if (subscriber.parseJson) {
         try {
           const parsed = JSON.parse(str);
           subscriber.emitVoid('command.json', parsed, subscriber, topic, details);
-        } catch {
+          this.logger.debug(
+            `Emitting command.json from ${topic} for ${subscriber.constructor.name}`,
+          );
+        } catch (err) {
           subscriber.emitVoid('command.raw', payload, subscriber, topic, details);
+          this.logger.warn(
+            `Emitting command.raw from ${topic} (invalid JSON) for ${subscriber.constructor.name}. If this occurs often, consider setting parseJson to false.`,
+            {
+              err,
+            },
+          );
         }
       }
     } else {
       subscriber.emitVoid('command.raw', payload, subscriber, topic, details);
+      this.logger.debug(`Emitting command.raw from ${topic}`);
     }
   };
 }

@@ -44,6 +44,10 @@ export abstract class Subscriber<
 
   public async subscribe() {
     this.settings.addCommandCallback(this.commandTopic, this);
+    this.logger.debug(`Subscribing to command topic`, {
+      commandTopic: this.commandTopic,
+      ...this.debugInfo(),
+    });
     await this.mqtt.subscribeAsync(this.commandTopic, { qos: 1 });
   }
 
