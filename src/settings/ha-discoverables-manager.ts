@@ -43,7 +43,7 @@ export class HaDiscoverableManager {
     this.logger = logger;
     this.client.on('message', this.messageCallback);
     this.addConnectCallback(() => {
-      this.logger.debug(`Connected to MQTT broker`);
+      this.logger.info(`HaDiscoverableManager connected to MQTT broker`);
     });
   }
 
@@ -118,6 +118,10 @@ export class HaDiscoverableManager {
       return;
     }
     const { subscriber } = data;
+    this.logger.debug(
+      `Received message on topic ${topic} for subscriber ${subscriber.constructor.name}`,
+    );
+
     const details = {
       raw: payload,
       client: this.client,
