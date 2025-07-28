@@ -49,12 +49,12 @@ export class DeviceInfo {
   hwVersion?: string;
 
   /** A list of IDs that uniquely identify the device. For example a serial number. */
-  @Validate(z.any(/* TODO: list of strings or single string */).optional())
+  @Validate(z.string().or(z.array(z.string())).optional())
   identifiers?: string[] | string;
 
   /** A list of connections of the device to the outside world as a list of tuples [connection_type, connection_identifier] */
-  @Validate(z.array(z.tuple([z.unknown(), z.unknown()])).optional())
-  connections?: [unknown, unknown][];
+  @Validate(z.array(z.tuple([z.string(), z.string()])).optional())
+  connections?: [string, string][];
 
   /** A link to the webpage that can manage the configuration of this device. Can be either an HTTP or HTTPS link. */
   @Validate(z.string().optional())
