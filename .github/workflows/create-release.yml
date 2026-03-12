@@ -11,19 +11,22 @@ on:
           - minor
           - major
 
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org'
+      - run: npm install --global npm@latest
       - run: npm ci
       - run: npm run lint
       - run: npm run prettier:check
@@ -35,9 +38,9 @@ jobs:
           NEW_VERSION=$(npm version ${{ github.event.inputs.bump }})
           echo "New version: $NEW_VERSION"
           git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git HEAD:main "$NEW_VERSION"
-      - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: npm publish
 
       - name: Generate TypeDoc
         run: npx typedoc --entryPoints src/index.ts

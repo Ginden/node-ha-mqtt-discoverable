@@ -4,6 +4,10 @@
   "description": "Rewrite of classic Python library, but in Node",
   "license": "Apache-2.0",
   "author": "Michał Wadas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ginden/node-ha-mqtt-discoverable.git"
+  },
   "type": "commonjs",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
