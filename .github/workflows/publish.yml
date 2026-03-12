@@ -1,0 +1,27 @@
+name: Publish to npm
+
+on:
+  repository_dispatch:
+    types:
+      - npm-publish
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: refs/tags/${{ github.event.client_payload.tag }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install --global npm@latest
+      - run: npm ci
+      - run: npm publish
