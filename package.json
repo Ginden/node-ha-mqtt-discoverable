@@ -6,7 +6,7 @@
   "author": "Michał Wadas",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ginden/node-ha-mqtt-discoverable.git"
+    "url": "git+https://github.com/Ginden/node-ha-mqtt-discoverable.git"
   },
   "type": "commonjs",
   "main": "dist/index.js",
