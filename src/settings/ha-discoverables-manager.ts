@@ -29,6 +29,7 @@ export class HaDiscoverableManager {
   readonly manualAvailability: boolean;
   readonly logger: DiscoverableLogger;
 
+  private connectCallbacks: Array<(client: MqttClient) => unknown> = [];
   private commandCallbacks: Map<string, { subscriber: Subscriber<EntityInfo> }> = new Map();
 
   constructor(
@@ -41,6 +42,13 @@ export class HaDiscoverableManager {
     this.mqttSettings = mqttSettings ?? new HaDiscoverableMqttSettings();
     this.manualAvailability = manualAvailability;
     this.logger = logger;
+    this.client.on('connect', () => {
+      for (const callback of this.connectCallbacks) {
+        Promise.resolve()
+          .then(() => callback(this.client))
+          .catch((e) => this.client.emit('error', e));
+      }
+    });
     this.client.on('message', this.messageCallback);
     this.addConnectCallback(() => {
       this.logger.info(`HaDiscoverableManager connected to MQTT broker`);
@@ -63,14 +71,11 @@ export class HaDiscoverableManager {
    * This is not an elegant solution, but async constructors don't exist in JS.
    */
   addConnectCallback(callback: (client: MqttClient) => unknown) {
+    this.connectCallbacks.push(callback);
     if (this.client.connected) {
       setImmediate(this.client)
         .then(callback)
         .catch((e) => this.client.emit('error', e));
-    } else {
-      this.client.once('connect', () => {
-        return callback(this.client);
-      });
     }
   }
 

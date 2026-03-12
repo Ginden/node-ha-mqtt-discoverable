@@ -1,9 +1,8 @@
 import { findFirst } from '@ginden/blinkstick-v2';
 import { connect } from 'mqtt';
 
-const { DeviceInfo, Light, LightInfo, HaDiscoverableGlobalSettings } = await import(
-  '../../dist/index.js'
-);
+const { DeviceInfo, Light, LightInfo, HaDiscoverableGlobalSettings } =
+  await import('../../dist/index.js');
 
 const blinkstick = findFirst();
 

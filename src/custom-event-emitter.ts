@@ -9,9 +9,10 @@ type Callback<Args extends unknown[]> = (...args: Args) => unknown;
 type KeyOf<T> = keyof T & string;
 
 // This insanity is caused by bad typing in the ` @types / node ` package
-export class CustomEventEmitter<EventMap extends Record<string, unknown[]>>
-  implements Record<InternalMethods, unknown>
-{
+export class CustomEventEmitter<EventMap extends Record<string, unknown[]>> implements Record<
+  InternalMethods,
+  unknown
+> {
   private readonly eventEmitter: EventEmitter;
   constructor(options?: { captureRejections?: boolean }) {
     this.eventEmitter = new EventEmitter(options);
