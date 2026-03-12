@@ -4,11 +4,8 @@ import { MessageDetails } from './settings/message-callback';
 import { HaDiscoverableManager } from './settings';
 import { JsonValue } from 'type-fest';
 
-export interface SubscriberEvents<
-  CommandOptions,
-  Sensor,
-  EI extends EntityInfo,
-> extends DiscoverableEvents {
+export interface SubscriberEvents<CommandOptions, Sensor, EI extends EntityInfo>
+  extends DiscoverableEvents {
   // If parseJson is true, this will be emitted with the parsed JSON payload
   'command.json': [
     json: CommandOptions,
