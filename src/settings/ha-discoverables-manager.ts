@@ -53,6 +53,9 @@ export class HaDiscoverableManager {
     this.addConnectCallback(() => {
       this.logger.info(`HaDiscoverableManager connected to MQTT broker`);
     });
+    if (this.mqttSettings.haStatusTopic) {
+      this.addConnectCallback((client) => client.subscribeAsync(this.mqttSettings.haStatusTopic!));
+    }
   }
 
   /**
@@ -117,6 +120,15 @@ export class HaDiscoverableManager {
   }
 
   protected readonly messageCallback: OnMessageCallback = (topic, payload, packet) => {
+    if (this.mqttSettings.haStatusTopic && topic === this.mqttSettings.haStatusTopic) {
+      if (payload.toString('utf8') === 'online') {
+        this.logger.info('Home Assistant came online, re-publishing all discovery configs');
+        for (const discoverable of this.discoverables) {
+          discoverable.writeConfig().catch((e) => this.client.emit('error', e));
+        }
+      }
+      return;
+    }
     const data = this.commandCallbacks.get(topic);
     if (!data) {
       this.logger.debug(`Received message on topic ${topic}, but no callback registered`);

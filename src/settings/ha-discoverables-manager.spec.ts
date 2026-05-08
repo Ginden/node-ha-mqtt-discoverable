@@ -29,15 +29,16 @@ suite(HaDiscoverableManager.name, () => {
     client.emitConnect();
     await setImmediate();
 
+    // 1 for the switch command topic + 1 for hass/status
     expect(client.publishAsync).toHaveBeenCalledTimes(1);
-    expect(client.subscribeAsync).toHaveBeenCalledTimes(1);
+    expect(client.subscribeAsync).toHaveBeenCalledTimes(2);
 
     client.connected = false;
     client.emitConnect();
     await setImmediate();
 
     expect(client.publishAsync).toHaveBeenCalledTimes(2);
-    expect(client.subscribeAsync).toHaveBeenCalledTimes(2);
+    expect(client.subscribeAsync).toHaveBeenCalledTimes(4);
   });
 
   test('calls callbacks added while connected immediately and on later reconnects', async () => {

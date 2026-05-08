@@ -95,7 +95,13 @@ export abstract class Discoverable<
       });
 
       assert(configTopic, 'Config topic not set');
-      const ret = await this.mqtt.publishAsync(configTopic, JSON.stringify(configMessage));
+      const { configRetainExpirySeconds } = this.settings.mqttSettings;
+      const ret = await this.mqtt.publishAsync(configTopic, JSON.stringify(configMessage), {
+        retain: true,
+        ...(configRetainExpirySeconds != null && Number.isFinite(configRetainExpirySeconds)
+          ? { properties: { messageExpiryInterval: configRetainExpirySeconds } }
+          : {}),
+      });
       this.emitVoid('write-config', this, configMessage);
       return ret;
     } catch (e) {
