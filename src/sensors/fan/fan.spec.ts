@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { setImmediate } from 'timers/promises';
 import { expect, suite, test, vi } from 'vitest';
 import { HaDiscoverableManager } from '../../settings';
 import { Fan } from './fan';
@@ -117,5 +118,50 @@ suite('MQTT fan', () => {
     );
     expect(() => fan.setPresetMode('boost')).toThrow('Preset mode boost is not configured');
     expect(() => fan.setDirection('forward')).toThrow('direction state topic is not configured');
+  });
+
+  test('handles commands as strings by default without emitting raw payloads', async () => {
+    const client = new FakeMqttClient();
+    const manager = new HaDiscoverableManager(client as never);
+    const fan = new Fan(FanInfo.create({ name: 'Bedroom Fan' }), manager);
+    const onStringCommand = vi.fn();
+    const onRawCommand = vi.fn();
+
+    fan.on('command.string', onStringCommand);
+    fan.on('command.raw', onRawCommand);
+    await fan.subscribe();
+
+    client.emit('message', fan.commandTopic, Buffer.from('ON'), {});
+    await setImmediate();
+
+    expect(fan.parseJson).toBe(false);
+    expect(onStringCommand).toHaveBeenCalledWith(
+      'ON',
+      fan,
+      fan.commandTopic,
+      expect.objectContaining({ raw: Buffer.from('ON') }),
+    );
+    expect(onRawCommand).not.toHaveBeenCalled();
+  });
+
+  test('allows consumers to opt back into JSON command parsing', async () => {
+    const client = new FakeMqttClient();
+    const manager = new HaDiscoverableManager(client as never);
+    const fan = new Fan(FanInfo.create({ name: 'Bedroom Fan' }), manager);
+    const onJsonCommand = vi.fn();
+
+    fan.parseJson = true;
+    fan.on('command.json', onJsonCommand);
+    await fan.subscribe();
+
+    client.emit('message', fan.commandTopic, Buffer.from('50'), {});
+    await setImmediate();
+
+    expect(onJsonCommand).toHaveBeenCalledWith(
+      50,
+      fan,
+      fan.commandTopic,
+      expect.objectContaining({ raw: Buffer.from('50') }),
+    );
   });
 });

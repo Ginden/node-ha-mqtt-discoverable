@@ -4,6 +4,8 @@ import { FanDirection, FanInfo } from './fan-info';
 
 /** Implements an MQTT fan for Home Assistant discovery. */
 export class Fan extends Subscriber<FanInfo, string | number> {
+  parseJson = false;
+
   /** Set the fan to its running state. */
   switchOn() {
     return this.updateState(this.entity.payloadOn);
