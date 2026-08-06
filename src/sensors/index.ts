@@ -12,6 +12,8 @@ export * from './date-time/date-time-info';
 export * from './date-time/date-time';
 export * from './device-trigger/device-trigger-info';
 export * from './device-trigger/device-trigger';
+export * from './fan/fan-info';
+export * from './fan/fan';
 export * from './image/image-info';
 export * from './image/image';
 export * from './light/light-info';
