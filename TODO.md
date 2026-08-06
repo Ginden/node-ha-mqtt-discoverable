@@ -7,10 +7,14 @@ Tests are missing. Proper setup would spawn a broker and Home Assistant instance
 The following entity types are currently missing. As Home Assistant continues to evolve, [new MQTT integrations are added](https://www.home-assistant.io/integrations/?search=mqtt), so this list may be out of date.
 
 - [ ] [Device tracker](https://www.home-assistant.io/integrations/device_tracker.mqtt/)
+- [ ] [Event](https://www.home-assistant.io/integrations/event.mqtt/)
 - [ ] [Fan](https://www.home-assistant.io/integrations/fan.mqtt/)
 - [ ] [HVAC](https://www.home-assistant.io/integrations/climate.mqtt/)
+- [ ] [Humidifier](https://www.home-assistant.io/integrations/humidifier.mqtt/)
+- [ ] [Infrared](https://www.home-assistant.io/integrations/infrared/)
 - [ ] [Lawn mower](https://www.home-assistant.io/integrations/lawn_mower.mqtt/)
 - [ ] [Lock](https://www.home-assistant.io/integrations/lock.mqtt/)
+- [ ] [Notify](https://www.home-assistant.io/integrations/notify.mqtt/)
 - [ ] [Alarm control panel](https://www.home-assistant.io/integrations/alarm_control_panel.mqtt/)
 - [ ] [Scene](https://www.home-assistant.io/integrations/scene.mqtt/)
 - [ ] [Siren](https://www.home-assistant.io/integrations/siren.mqtt/)
