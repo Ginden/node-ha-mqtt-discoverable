@@ -8,7 +8,7 @@ The following entity types are currently missing. As Home Assistant continues to
 
 - [ ] [Device tracker](https://www.home-assistant.io/integrations/device_tracker.mqtt/)
 - [ ] [Event](https://www.home-assistant.io/integrations/event.mqtt/)
-- [ ] [Fan](https://www.home-assistant.io/integrations/fan.mqtt/)
+- [x] [Fan](https://www.home-assistant.io/integrations/fan.mqtt/)
 - [ ] [HVAC](https://www.home-assistant.io/integrations/climate.mqtt/)
 - [ ] [Humidifier](https://www.home-assistant.io/integrations/humidifier.mqtt/)
 - [ ] [Infrared](https://www.home-assistant.io/integrations/infrared/)
