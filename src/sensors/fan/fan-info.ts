@@ -12,8 +12,8 @@ export type FanDirection = 'forward' | 'reverse';
 export class FanInfo extends EntityInfo {
   static wholeValidation(obj: FanInfo) {
     super.wholeValidation(obj);
-    if (obj.speedRangeMax < obj.speedRangeMin) {
-      throw new RangeError('Fan speedRangeMax must be at least speedRangeMin');
+    if (obj.speedRangeMax <= obj.speedRangeMin) {
+      throw new RangeError('Fan speedRangeMax must be greater than speedRangeMin');
     }
   }
 

@@ -185,6 +185,9 @@ suite('MQTT fan', () => {
     expect(client.publishAsync).toHaveBeenCalledWith('fan/power', 'OFF', { retain: true });
     expect(client.publishAsync).toHaveBeenCalledWith('fan/speed', '9', { retain: true });
     expect(() => fan.setPercentage(NaN)).toThrow(RangeError);
+    expect(() =>
+      FanInfo.create({ name: 'Empty range', speedRangeMin: 10, speedRangeMax: 10 }),
+    ).toThrow(RangeError);
     expect(() => FanInfo.create({ name: 'Invalid', speedRangeMin: 20, speedRangeMax: 10 })).toThrow(
       RangeError,
     );
