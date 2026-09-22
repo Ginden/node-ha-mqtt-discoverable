@@ -32,8 +32,12 @@ export class Fan extends Subscriber<FanInfo, string | number> {
 
   /** Publish the device speed within its configured speed range. */
   setPercentage(percentage: number) {
-    if (percentage < this.entity.speedRangeMin || percentage > this.entity.speedRangeMax) {
-      const range = `[${this.entity.speedRangeMin}, ${this.entity.speedRangeMax}]`;
+    if (
+      !Number.isFinite(percentage) ||
+      percentage < this.entity.speedRangeMin - 1 ||
+      percentage > this.entity.speedRangeMax
+    ) {
+      const range = `[${this.entity.speedRangeMin - 1}, ${this.entity.speedRangeMax}]`;
       throw new RangeError(`Fan percentage is not within configured speed range ${range}`);
     }
     return this.updateAuxiliaryState(percentage, this.entity.percentageStateTopic, 'percentage');
@@ -62,13 +66,22 @@ export class Fan extends Subscriber<FanInfo, string | number> {
     }
   }
 
+  protected initTopics() {
+    super.initTopics();
+    this.stateTopic = this.entity.stateTopic ?? this.stateTopic;
+  }
+
   private auxiliaryCommandTopics() {
     return [
-      this.entity.directionCommandTopic,
-      this.entity.oscillationCommandTopic,
-      this.entity.percentageCommandTopic,
-      this.entity.presetModeCommandTopic,
-    ].filter((topic): topic is string => topic !== undefined && topic !== this.commandTopic);
+      ...new Set(
+        [
+          this.entity.directionCommandTopic,
+          this.entity.oscillationCommandTopic,
+          this.entity.percentageCommandTopic,
+          this.entity.presetModeCommandTopic,
+        ].filter((topic): topic is string => topic !== undefined && topic !== this.commandTopic),
+      ),
+    ];
   }
 
   private updateAuxiliaryState(state: string | number, topic: string | undefined, feature: string) {

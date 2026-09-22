@@ -8,7 +8,10 @@ import { FanInfo } from './fan-info';
 class FakeMqttClient extends EventEmitter {
   connected = false;
   publishAsync = vi.fn(async () => undefined);
-  subscribeAsync = vi.fn(async () => []);
+  subscribeAsync = vi.fn(async (...args: [string, unknown?]) => {
+    void args;
+    return [];
+  });
 }
 
 suite('MQTT fan', () => {
@@ -113,7 +116,7 @@ suite('MQTT fan', () => {
     await fan.subscribe();
 
     expect(client.subscribeAsync).toHaveBeenCalledTimes(5);
-    expect(() => fan.setPercentage(0)).toThrow(
+    expect(() => fan.setPercentage(-1)).toThrow(
       'Fan percentage is not within configured speed range',
     );
     expect(() => fan.setPresetMode('boost')).toThrow('Preset mode boost is not configured');
@@ -163,5 +166,56 @@ suite('MQTT fan', () => {
       fan.commandTopic,
       expect.objectContaining({ raw: Buffer.from('50') }),
     );
+  });
+  test('publishes the off speed and honors a custom state topic', async () => {
+    const client = new FakeMqttClient();
+    const fan = new Fan(
+      FanInfo.create({
+        name: 'Custom',
+        stateTopic: 'fan/power',
+        percentageStateTopic: 'fan/speed',
+        speedRangeMin: 10,
+        speedRangeMax: 20,
+      }),
+      new HaDiscoverableManager(client as never),
+    );
+    await fan.switchOff();
+    await fan.setPercentage(9);
+    expect(fan.generateConfig()).toMatchObject({ state_topic: 'fan/power' });
+    expect(client.publishAsync).toHaveBeenCalledWith('fan/power', 'OFF', { retain: true });
+    expect(client.publishAsync).toHaveBeenCalledWith('fan/speed', '9', { retain: true });
+    expect(() => fan.setPercentage(NaN)).toThrow(RangeError);
+    expect(() => FanInfo.create({ name: 'Invalid', speedRangeMin: 20, speedRangeMax: 10 })).toThrow(
+      RangeError,
+    );
+  });
+
+  test('routes auxiliary commands once and resubscribes after reconnect', async () => {
+    const client = new FakeMqttClient();
+    const fan = new Fan(
+      FanInfo.create({
+        name: 'Shared',
+        directionCommandTopic: 'fan/control',
+        presetModeCommandTopic: 'fan/control',
+      }),
+      new HaDiscoverableManager(client as never),
+    );
+    const handler = vi.fn();
+    fan.on('command.string', handler);
+    await fan.subscribe();
+    expect(client.subscribeAsync).toHaveBeenCalledTimes(2);
+    client.emit('message', 'fan/control', Buffer.from('reverse'), {});
+    await setImmediate();
+    expect(handler).toHaveBeenCalledExactlyOnceWith(
+      'reverse',
+      fan,
+      'fan/control',
+      expect.any(Object),
+    );
+    client.emit('connect');
+    await setImmediate();
+    expect(
+      client.subscribeAsync.mock.calls.filter(([topic]) => topic === 'fan/control'),
+    ).toHaveLength(2);
   });
 });
