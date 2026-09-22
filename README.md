@@ -34,6 +34,81 @@ All subclasses of `Discoverable` emit the following events:
 - `connected` - emitted when the entity is connected to the MQTT broker. The payload is the discoverable itself.
 - `write-config` - emitted when the entity is written to the MQTT broker. The payload is `[Discoverable, config: Record<string, any>]`.
 
+### MQTT entity coverage
+
+All MQTT discovery component types are represented, including these additions:
+
+| MQTT component              | Entity class                          | Discovery options                             |
+| --------------------------- | ------------------------------------- | --------------------------------------------- |
+| Alarm control panel         | `AlarmControlPanel`                   | `AlarmControlPanelInfo`                       |
+| Climate / HVAC              | `Climate`                             | `ClimateInfo`                                 |
+| Device tracker              | `DeviceTracker`                       | `DeviceTrackerInfo`                           |
+| Event                       | `MqttEvent`                           | `EventInfo`                                   |
+| Fan                         | `Fan`                                 | `FanInfo`                                     |
+| Humidifier                  | `Humidifier`                          | `HumidifierInfo`                              |
+| Infrared emitter / receiver | `InfraredEmitter`, `InfraredReceiver` | `InfraredEmitterInfo`, `InfraredReceiverInfo` |
+| Lawn mower                  | `LawnMower`                           | `LawnMowerInfo`                               |
+| Lock                        | `Lock`                                | `LockInfo`                                    |
+| Notify                      | `Notify`                              | `NotifyInfo`                                  |
+| Scene                       | `Scene`                               | `SceneInfo`                                   |
+| Siren                       | `Siren`                               | `SirenInfo`                                   |
+| Tag scanner                 | `TagScanner`                          | `TagScannerInfo`                              |
+| Firmware update             | `Update`                              | `UpdateInfo`                                  |
+| Vacuum                      | `Vacuum`                              | `VacuumInfo`                                  |
+| Valve                       | `Valve`                               | `ValveInfo`                                   |
+| Water heater                | `WaterHeater`                         | `WaterHeaterInfo`                             |
+
+These classes take `(info, manager)`. Discovery options use camelCase; MQTT configuration keys use snake_case. State helpers publish device feedback. Handle Home Assistant commands with `command.string`; its third argument identifies the command topic. Infrared emitters parse JSON commands by default. Other new command entities use strings by default; set `parseJson = true` when a command template produces JSON.
+
+Main topics are generated automatically. Climate and water heater entities generate mode, target temperature, and current temperature channels. Humidifiers generate power and target humidity channels. Lawn mowers generate activity, start, pause, and dock channels. Configure optional channels explicitly in the corresponding `Info` object before using their state helpers. For example, `setFanMode()` requires `fanModeStateTopic`.
+
+```typescript
+import { connect } from 'mqtt';
+import {
+  Climate,
+  ClimateInfo,
+  EventInfo,
+  HaDiscoverableManager,
+  HaDiscoverableMqttSettings,
+  MqttEvent,
+} from '@ginden/ha-mqtt-discoverable';
+
+const client = connect('mqtt://localhost:1883');
+const manager = new HaDiscoverableManager(
+  client,
+  new HaDiscoverableMqttSettings('hmd', 'homeassistant', 'homeassistant/status'),
+);
+
+const climate = new Climate(
+  ClimateInfo.create({
+    name: 'Office thermostat',
+    uniqueId: 'office-thermostat',
+    modes: ['off', 'heat'],
+    temperatureUnit: 'C',
+    temperatureCommandTopic: 'office/target/set',
+  }),
+  manager,
+);
+
+climate.on('command.string', (payload, _entity, topic) => {
+  console.log('Device command:', topic, payload);
+  // Apply the command to your hardware, then publish its measured state.
+});
+await climate.setCurrentTemperature(20.5);
+await climate.setTemperature(22);
+await climate.setMode('heat');
+
+const doorbell = new MqttEvent(
+  EventInfo.create({ name: 'Doorbell', uniqueId: 'doorbell-event', eventTypes: ['press'] }),
+  manager,
+);
+await doorbell.trigger('press', { button: 1 });
+```
+
+Events, tag scans (`TagScanner.scan()`), and infrared receptions (`InfraredReceiver.receive()`) are never retained. Vacuum and update state objects use Home Assistant's JSON keys, for example `vacuum.updateState({ state: 'cleaning', fan_speed: 'quiet' })` and `update.updateState({ installed_version: '1.0', latest_version: '2.0' })`. Position-reporting valves require `reportsPosition: true`; `setPosition()` uses the configured native position range. Fan `setPercentage()` similarly publishes native speed values, with `speedRangeMin - 1` representing off.
+
+See the [Home Assistant MQTT documentation](https://www.home-assistant.io/integrations/mqtt/) for platform schemas. Available features depend on the Home Assistant version; newer options such as infrared require a version supporting that platform. Unit tests exercise MQTT payloads and routing with a simulated client; live broker/Home Assistant integration tests remain on the roadmap.
+
 ### TODO
 
 Quite a lot! While I implemented all features from the original library, there is still a lot to do here.

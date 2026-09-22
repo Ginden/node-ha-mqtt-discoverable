@@ -1,28 +1,28 @@
 # TODO
 
-Tests are missing. Proper setup would spawn a broker and Home Assistant instance using `testcontainers`, and test the library against them, with the possible necessity of running the whole browser instance to retrieve API keys. If you want to help with this, please open an issue or pull request.
+Unit tests cover discovery payloads, state publications, commands, reconnects, and transport failures. Integration tests against a real broker and Home Assistant instance are still needed.
 
-## Missing entity types
+## MQTT entity coverage
 
-The following entity types are currently missing. As Home Assistant continues to evolve, [new MQTT integrations are added](https://www.home-assistant.io/integrations/?search=mqtt), so this list may be out of date.
+The formerly missing entity types below are now implemented. As Home Assistant continues to evolve, [new MQTT integrations are added](https://www.home-assistant.io/integrations/?search=mqtt), so this list may be out of date.
 
-- [ ] [Device tracker](https://www.home-assistant.io/integrations/device_tracker.mqtt/)
-- [ ] [Event](https://www.home-assistant.io/integrations/event.mqtt/)
+- [x] [Device tracker](https://www.home-assistant.io/integrations/device_tracker.mqtt/)
+- [x] [Event](https://www.home-assistant.io/integrations/event.mqtt/)
 - [x] [Fan](https://www.home-assistant.io/integrations/fan.mqtt/)
-- [ ] [HVAC](https://www.home-assistant.io/integrations/climate.mqtt/)
-- [ ] [Humidifier](https://www.home-assistant.io/integrations/humidifier.mqtt/)
-- [ ] [Infrared](https://www.home-assistant.io/integrations/infrared/)
-- [ ] [Lawn mower](https://www.home-assistant.io/integrations/lawn_mower.mqtt/)
-- [ ] [Lock](https://www.home-assistant.io/integrations/lock.mqtt/)
-- [ ] [Notify](https://www.home-assistant.io/integrations/notify.mqtt/)
-- [ ] [Alarm control panel](https://www.home-assistant.io/integrations/alarm_control_panel.mqtt/)
-- [ ] [Scene](https://www.home-assistant.io/integrations/scene.mqtt/)
-- [ ] [Siren](https://www.home-assistant.io/integrations/siren.mqtt/)
-- [ ] [Tag scanner](https://www.home-assistant.io/integrations/tag.mqtt/)
-- [ ] [Vacuum](https://www.home-assistant.io/integrations/vacuum.mqtt/)
-- [ ] [Valve](https://www.home-assistant.io/integrations/valve.mqtt/)
-- [ ] [Water heater](https://www.home-assistant.io/integrations/water_heater.mqtt/)
-- [ ] [Firmware update](https://www.home-assistant.io/integrations/update.mqtt/)
+- [x] [HVAC](https://www.home-assistant.io/integrations/climate.mqtt/)
+- [x] [Humidifier](https://www.home-assistant.io/integrations/humidifier.mqtt/)
+- [x] [Infrared](https://www.home-assistant.io/integrations/infrared.mqtt/)
+- [x] [Lawn mower](https://www.home-assistant.io/integrations/lawn_mower.mqtt/)
+- [x] [Lock](https://www.home-assistant.io/integrations/lock.mqtt/)
+- [x] [Notify](https://www.home-assistant.io/integrations/notify.mqtt/)
+- [x] [Alarm control panel](https://www.home-assistant.io/integrations/alarm_control_panel.mqtt/)
+- [x] [Scene](https://www.home-assistant.io/integrations/scene.mqtt/)
+- [x] [Siren](https://www.home-assistant.io/integrations/siren.mqtt/)
+- [x] [Tag scanner](https://www.home-assistant.io/integrations/tag.mqtt/)
+- [x] [Vacuum](https://www.home-assistant.io/integrations/vacuum.mqtt/)
+- [x] [Valve](https://www.home-assistant.io/integrations/valve.mqtt/)
+- [x] [Water heater](https://www.home-assistant.io/integrations/water_heater.mqtt/)
+- [x] [Firmware update](https://www.home-assistant.io/integrations/update.mqtt/)
 
 ## Missing types
 

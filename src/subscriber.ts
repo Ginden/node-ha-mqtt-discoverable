@@ -57,7 +57,7 @@ export abstract class Subscriber<
   }
 
   /** Override base config to add the command topic of this switch */
-  generateConfig() {
+  generateConfig(): Record<string, unknown> {
     return {
       ...super.generateConfig(),
       command_topic: this.commandTopic,

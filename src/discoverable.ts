@@ -136,7 +136,7 @@ export abstract class Discoverable<
     return this._state_helper(available ? 'online' : 'offline', this.availabilityTopic);
   }
 
-  protected generateConfig() {
+  protected generateConfig(): Record<string, unknown> {
     const config = this.entity.modelDump();
     const topics = {
       state_topic: this.stateTopic,
